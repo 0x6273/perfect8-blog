@@ -8,6 +8,7 @@ class BlogApplicationTests {
 
     @Test
     void contextLoads() {
+        assert(false);
     }
 
 }
