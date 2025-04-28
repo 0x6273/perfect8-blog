@@ -10,12 +10,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install JDK
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: 24 # Keep this in sync with the java version in pom.xml
-
       - name: Install Podman
         run: |
           sudo apt-get update
@@ -27,27 +21,26 @@ jobs:
         with:
           gpg_private_key: ${{ secrets.GPG_SIGNING_KEY }}
 
-      - name: Start ssh-agent
-        run: |
-          eval `ssh-agent -s`
-          echo "SSH_AUTH_SOCK=$SSH_AUTH_SOCK" >> $GITHUB_ENV
-          echo "SSH_AGENT_PID=$SSH_AGENT_PID" >> $GITHUB_ENV
-
-      - name: Add ssh host key
+      - name: Add ssh keys
         run: |
           umask 077
-          mkdir ~/.ssh
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_KEY }}" > ~/.ssh/id_ed25519
           echo "${{ secrets.SSH_HOST }} ssh-ed25519 ${{ secrets.SSH_HOST_KEY }}" > ~/.ssh/known_hosts
           umask 022
 
-      - name: Import SSH key
-        run: ssh-add <( echo "${{ secrets.SSH_KEY }}" )
-          
       - name: Add Podman SSH connection
         run: |
           podman system connection add CONNECTION \
             --default \
+            --identity ~/.ssh/id_ed25519 \
             "ssh://${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}"
+
+      - name: Install JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 24 # Keep this in sync with the java version in pom.xml
 
       - name: Build Spring backend
         run: |
