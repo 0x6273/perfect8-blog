@@ -28,13 +28,12 @@ jobs:
           gpg_private_key: ${{ secrets.GPG_SIGNING_KEY }}
 
       - name: Import SSH key
-        run: ssh-add < ( echo "${{ secrets.SSH_KEY }}" )
+        run: ssh-add <( echo "${{ secrets.SSH_KEY }}" )
           
       - name: Add Podman SSH connection
         run: |
           podman system connection add CONNECTION \
             --default \
-            --identity ~/.ssh/id_ed25519 \
             "ssh://${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}"
 
       - name: Build Spring backend
