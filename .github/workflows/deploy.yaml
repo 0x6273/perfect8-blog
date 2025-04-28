@@ -31,7 +31,11 @@ jobs:
         run: eval `ssh-agent -s`
 
       - name: Add ssh host key
-        run: echo "${{ secrets.SSH_HOST }} ssh-ed25519 ${{ secrets.SSH_HOST_KEY }}" > ~/.ssh/known_hosts
+        run: |
+          umask 077
+          mkdir ~/.ssh
+          echo "${{ secrets.SSH_HOST }} ssh-ed25519 ${{ secrets.SSH_HOST_KEY }}" > ~/.ssh/known_hosts
+          umask 022
 
       - name: Import SSH key
         run: ssh-add <( echo "${{ secrets.SSH_KEY }}" )
