@@ -1,4 +1,7 @@
 package com.perfect8.blog.dto;
 
-public record PostDto(String title /* TODO more fields here like body, date */) {
+import java.time.LocalDateTime;
+
+/// A post sent from backend to frontend.
+public record PostDto(String title, String body, LocalDateTime publishedAt) {
 }
