@@ -43,8 +43,8 @@ jobs:
       - name: Import SSH key
         run: ssh-add <( echo "${{ secrets.SSH_KEY }}" )
           
-      - name: Send the compose.yaml to the server
-        run: scp spring-backend/compose.yaml "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:"
+      - name: TEST
+        run: ssh -vT "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}" ls -la
 
       - name: Add Podman SSH connection
         run: |
@@ -67,5 +67,7 @@ jobs:
       - name: Send image to server
         run: podman image scp spring_backend "root@CONNECTION::"
 
+      - name: Send the compose.yaml to the server
+        run: scp spring-backend/compose.yaml "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:"
 
 #TODO: Restart compose
