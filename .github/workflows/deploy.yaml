@@ -59,7 +59,8 @@ jobs:
           cd spring-backend
           podman build \
             --tag spring_backend \
-            --sign-by ${{ steps.import-gpg.outputs.fingerprint }}
+            --sign-by ${{ steps.import-gpg.outputs.fingerprint }} \
+            .
 
       - name: Send image to server
         run: podman image scp spring_backend "root@CONNECTION::"
