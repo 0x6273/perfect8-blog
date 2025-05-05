@@ -43,9 +43,6 @@ jobs:
       - name: Import SSH key
         run: ssh-add <( echo "${{ secrets.SSH_KEY }}" )
           
-      - name: TEST
-        run: ssh -o KexAlgorithms=diffie-hellman-group14-sha256,curve25519-sha256@libssh.org -vT "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}" ls -la
-
       - name: Add Podman SSH connection
         run: |
           podman system connection add CONNECTION \
@@ -62,7 +59,7 @@ jobs:
           cd spring-backend
           podman build \
             --tag spring_backend \
-            --sign-by ${{ steps.import-gpg.fingerprint }}
+            --sign-by ${{ steps.import-gpg.outputs.fingerprint }}
 
       - name: Send image to server
         run: podman image scp spring_backend "root@CONNECTION::"
