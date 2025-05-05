@@ -37,7 +37,7 @@ jobs:
         run: |
           umask 077
           mkdir ~/.ssh
-          echo "${{ secrets.SSH_HOST }} ssh-ed25519 ${{ secrets.SSH_HOST_KEY }}" > ~/.ssh/known_hosts
+          echo "${{ secrets.SSH_HOST }} ecdsa-sha2-nistp256 ${{ secrets.SSH_HOST_KEY }}" > ~/.ssh/known_hosts
           umask 022
 
       - name: Import SSH key
